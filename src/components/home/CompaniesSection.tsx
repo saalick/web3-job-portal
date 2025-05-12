@@ -6,27 +6,27 @@ const CompaniesSection = () => {
   const companies = [
     {
       name: "Ethereum",
-      logo: "https://ethereum.foundation/svg/ethereum-logo-gray.svg"
+      logo: "https://cryptologos.cc/logos/ethereum-eth-logo.svg"
     },
     {
       name: "Chainlink",
-      logo: "https://chain.link/images/chainlink-logo-color-white-text.svg"
+      logo: "https://cryptologos.cc/logos/chainlink-link-logo.svg"
     },
     {
       name: "OpenSea",
-      logo: "https://opensea.io/static/images/logos/opensea-logo.svg"
+      logo: "https://storage.opensea.io/static/opensea-logo.svg"
     },
     {
       name: "Solana",
-      logo: "https://solana.com/_next/static/media/logotype.e4df684f.svg"
+      logo: "https://cryptologos.cc/logos/solana-sol-logo.svg"
     },
     {
       name: "Binance",
-      logo: "https://public.bnbstatic.com/static/images/common/binance-logo.svg"
+      logo: "https://cryptologos.cc/logos/bnb-bnb-logo.svg"
     },
     {
       name: "Tron",
-      logo: "https://tron.network/_nuxt/img/logo.85dac5f.png"
+      logo: "https://cryptologos.cc/logos/tron-trx-logo.svg"
     }
   ];
 
