@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { z } from "zod";
@@ -33,7 +32,7 @@ const jobFormSchema = z.object({
     "design", "product", "marketing", "business", "legal", "community", "other"
   ] as const),
   experience: z.enum(["entry", "mid", "senior", "lead"] as const),
-  skills: z.string().transform((val) => val.split(",").map((s) => s.trim()).filter((s) => s !== "")),
+  skills: z.string(), // Store as string in form, will be converted to array when saving
   applicationLink: z.string().url({ message: "Please enter a valid URL" }).optional().or(z.literal("")),
   contactEmail: z.string().email({ message: "Please enter a valid email address" }).optional().or(z.literal("")),
   published: z.boolean().default(false),
@@ -60,7 +59,7 @@ const PostJobPage = () => {
       type: "full-time",
       category: "blockchain-development",
       experience: "mid",
-      skills: "",
+      skills: "", // Store as string in form
       applicationLink: "",
       contactEmail: "",
       published: false,
@@ -128,10 +127,11 @@ const PostJobPage = () => {
 
     setIsLoading(true);
     try {
-      // Ensure skills is an array before saving to database
-      const skillsArray = typeof values.skills === 'string' 
-        ? values.skills.split(',').map(s => s.trim()).filter(s => s !== '')
-        : values.skills;
+      // Convert skills from comma-separated string to array
+      const skillsArray = values.skills
+        .split(",")
+        .map(skill => skill.trim())
+        .filter(skill => skill !== "");
         
       const jobData = {
         title: values.title,
