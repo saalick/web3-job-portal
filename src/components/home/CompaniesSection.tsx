@@ -6,27 +6,27 @@ const CompaniesSection = () => {
   const companies = [
     {
       name: "Ethereum Foundation",
-      logo: "https://ethereum.org/static/a110735dade3f354a46fc2446cd52476/f3a29/eth-home-icon.webp"
+      logo: "https://cryptologos.cc/logos/ethereum-eth-logo.svg?v=029"
     },
     {
       name: "Chainlink",
-      logo: "https://cryptologos.cc/logos/chainlink-link-logo.png"
+      logo: "https://cryptologos.cc/logos/chainlink-link-logo.svg?v=029"
     },
     {
       name: "Polygon",
-      logo: "https://cryptologos.cc/logos/polygon-matic-logo.png"
+      logo: "https://cryptologos.cc/logos/polygon-matic-logo.svg?v=029"
     },
     {
       name: "OpenSea",
-      logo: "https://storage.googleapis.com/opensea-static/Logomark/OpenSea-Full-Logo%20(dark).png"
+      logo: "https://opensea.io/static/images/logos/opensea.svg"
     },
     {
       name: "Solana",
-      logo: "https://cryptologos.cc/logos/solana-sol-logo.png"
+      logo: "https://cryptologos.cc/logos/solana-sol-logo.svg?v=029"
     },
     {
       name: "Aave",
-      logo: "https://cryptologos.cc/logos/aave-aave-logo.png"
+      logo: "https://cryptologos.cc/logos/aave-aave-logo.svg?v=029"
     }
   ];
 
@@ -52,7 +52,9 @@ const CompaniesSection = () => {
                 alt={`${company.name} logo`} 
                 className="h-12 object-contain" 
                 onError={(e) => {
-                  (e.target as HTMLImageElement).src = 'https://placeholder.svg';
+                  const target = e.target as HTMLImageElement;
+                  target.src = 'https://placeholder.svg';
+                  target.onerror = null; // Prevent infinite loop if fallback also fails
                 }}
               />
             </Link>
