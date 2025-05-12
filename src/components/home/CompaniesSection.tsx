@@ -5,28 +5,28 @@ import { Link } from "react-router-dom";
 const CompaniesSection = () => {
   const companies = [
     {
-      name: "Ethereum Foundation",
-      logo: "https://ethereum.org/static/4f10d2777b2d14759feb01c65b2765f7/13c43/eth-diamond-purple-white.png"
+      name: "Ethereum",
+      logo: "https://ethereum.foundation/svg/ethereum-logo-gray.svg"
     },
     {
       name: "Chainlink",
-      logo: "https://assets-global.website-files.com/5f6b7190899f41fb70882d08/5f760a499b56c47b8fa74fbb_chainlink-logo.svg"
-    },
-    {
-      name: "Polygon",
-      logo: "https://polygon.technology/_nuxt/image/a7642c.svg"
+      logo: "https://chain.link/images/chainlink-logo-color-white-text.svg"
     },
     {
       name: "OpenSea",
-      logo: "https://storage.googleapis.com/opensea-static/Logomark/Logomark-Blue.svg"
+      logo: "https://opensea.io/static/images/logos/opensea-logo.svg"
     },
     {
       name: "Solana",
-      logo: "https://solana.com/_next/static/media/solanaLogo.74d35f7a.svg"
+      logo: "https://solana.com/_next/static/media/logotype.e4df684f.svg"
     },
     {
-      name: "Aave",
-      logo: "https://aave.com/aavelogo.svg"
+      name: "Binance",
+      logo: "https://public.bnbstatic.com/static/images/common/binance-logo.svg"
+    },
+    {
+      name: "Tron",
+      logo: "https://tron.network/_nuxt/img/logo.85dac5f.png"
     }
   ];
 
@@ -55,6 +55,7 @@ const CompaniesSection = () => {
                   const target = e.target as HTMLImageElement;
                   target.src = 'https://placeholder.svg';
                   target.onerror = null; // Prevent infinite loop if fallback also fails
+                  console.log(`Failed to load ${company.name} logo`);
                 }}
               />
             </Link>
