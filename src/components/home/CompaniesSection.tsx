@@ -10,11 +10,11 @@ const CompaniesSection = () => {
     },
     {
       name: "Chainlink",
-      logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/14/Chainlink_logo_blue.svg/1280px-Chainlink_logo_blue.svg.png"
+      logo: "https://s2.coinmarketcap.com/static/img/coins/200x200/1975.png"
     },
     {
       name: "OpenSea",
-      logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6c/OpenSea_logo.svg/1200px-OpenSea_logo.svg.png"
+      logo: "https://storage.googleapis.com/opensea-static/Logos/OpenSea-Full-Logo%20(dark).png"
     },
     {
       name: "Solana",
