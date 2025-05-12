@@ -1,9 +1,9 @@
-
 import { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import { useAuth } from "@/hooks/useAuth";
+import { useAdmin } from "@/hooks/useAdmin";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
@@ -23,13 +23,14 @@ interface Job {
   published: boolean;
   expires_at: string;
   verification_status: "pending" | "approved" | "rejected";
+  user_id: string; // Added this property
 }
 
 const DashboardPage = () => {
   const { user, isLoading: authLoading } = useAuth();
+  const { isAdmin } = useAdmin();
   const [jobs, setJobs] = useState<Job[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [isAdmin, setIsAdmin] = useState(false);
   const [showAllJobs, setShowAllJobs] = useState(false);
   const navigate = useNavigate();
 
@@ -41,27 +42,6 @@ const DashboardPage = () => {
       return;
     }
 
-    const getUserProfile = async () => {
-      try {
-        const { data, error } = await supabase
-          .from("profiles")
-          .select("is_admin")
-          .eq("id", user.id)
-          .single();
-
-        if (error) {
-          throw error;
-        }
-
-        if (data) {
-          setIsAdmin(data.is_admin);
-        }
-      } catch (error) {
-        console.error("Error fetching user profile:", error);
-      }
-    };
-
-    getUserProfile();
     fetchJobs();
   }, [user, navigate, authLoading, showAllJobs]);
 
@@ -84,7 +64,13 @@ const DashboardPage = () => {
         throw error;
       }
 
-      setJobs(data || []);
+      // Cast the verification_status to the correct type
+      const typedJobs = data?.map(job => ({
+        ...job,
+        verification_status: job.verification_status as "pending" | "approved" | "rejected"
+      })) || [];
+
+      setJobs(typedJobs);
     } catch (error) {
       console.error("Error fetching jobs:", error);
       toast.error("Failed to load job listings");

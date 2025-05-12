@@ -20,7 +20,7 @@ interface Job {
   experience: string;
   skills: string[];
   created_at: string;
-  verification_status: string;
+  verification_status: "pending" | "approved" | "rejected";
 }
 
 const FeaturedJobsSection = () => {
@@ -43,7 +43,13 @@ const FeaturedJobsSection = () => {
           throw error;
         }
 
-        setFeaturedJobs(data || []);
+        // Cast the verification status to the correct type
+        const typedJobs = data?.map(job => ({
+          ...job,
+          verification_status: job.verification_status as "pending" | "approved" | "rejected"
+        })) || [];
+
+        setFeaturedJobs(typedJobs);
       } catch (error) {
         console.error("Error fetching featured jobs:", error);
       } finally {
