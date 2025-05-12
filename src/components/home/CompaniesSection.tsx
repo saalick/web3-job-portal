@@ -6,27 +6,27 @@ const CompaniesSection = () => {
   const companies = [
     {
       name: "Ethereum",
-      logo: "https://cryptologos.cc/logos/ethereum-eth-logo.svg"
+      logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/Ethereum_logo_2014.svg/256px-Ethereum_logo_2014.svg.png"
     },
     {
       name: "Chainlink",
-      logo: "https://cryptologos.cc/logos/chainlink-link-logo.svg"
+      logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/14/Chainlink_logo_blue.svg/1280px-Chainlink_logo_blue.svg.png"
     },
     {
       name: "OpenSea",
-      logo: "https://storage.opensea.io/static/opensea-logo.svg"
+      logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6c/OpenSea_logo.svg/1200px-OpenSea_logo.svg.png"
     },
     {
       name: "Solana",
-      logo: "https://cryptologos.cc/logos/solana-sol-logo.svg"
+      logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/Solana_logo.png/600px-Solana_logo.png"
     },
     {
       name: "Binance",
-      logo: "https://cryptologos.cc/logos/bnb-bnb-logo.svg"
+      logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e8/Binance_Logo.svg/1280px-Binance_Logo.svg.png"
     },
     {
       name: "Tron",
-      logo: "https://cryptologos.cc/logos/tron-trx-logo.svg"
+      logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2d/TRON-logo.svg/1280px-TRON-logo.svg.png"
     }
   ];
 
