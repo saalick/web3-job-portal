@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { z } from "zod";
@@ -11,12 +12,13 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from "sonner";
-import { Loader2 } from "lucide-react";
+import { Loader2, AlertTriangle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { JobCategory, JobType, ExperienceLevel, JOB_CATEGORIES, JOB_TYPES, EXPERIENCE_LEVELS } from "@/data/jobTypes";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 // Zod schema for job form validation
 const jobFormSchema = z.object({
@@ -44,6 +46,8 @@ const PostJobPage = () => {
   const { user, isLoading: authLoading } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
+  const [isTrustedPoster, setIsTrustedPoster] = useState(false);
+  const [verificationStatus, setVerificationStatus] = useState<string | null>(null);
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
 
@@ -73,6 +77,29 @@ const PostJobPage = () => {
       navigate("/auth");
       return;
     }
+
+    // Check if the user is a trusted poster
+    const checkUserRole = async () => {
+      try {
+        const { data, error } = await supabase
+          .from("profiles")
+          .select("is_trusted_poster")
+          .eq("id", user.id)
+          .single();
+
+        if (error) {
+          throw error;
+        }
+
+        if (data) {
+          setIsTrustedPoster(data.is_trusted_poster);
+        }
+      } catch (error) {
+        console.error("Error checking user role:", error);
+      }
+    };
+
+    checkUserRole();
 
     // If ID parameter exists, we're in edit mode
     if (id) {
@@ -113,6 +140,8 @@ const PostJobPage = () => {
           contactEmail: data.contact_email || "",
           published: data.published,
         });
+
+        setVerificationStatus(data.verification_status);
       }
     } catch (error) {
       console.error("Error fetching job details:", error);
@@ -148,6 +177,8 @@ const PostJobPage = () => {
         contact_email: values.contactEmail || null,
         user_id: user.id,
         published: values.published,
+        // Auto-approve jobs for trusted posters
+        verification_status: isTrustedPoster ? 'approved' : 'pending'
       };
 
       let response;
@@ -169,11 +200,19 @@ const PostJobPage = () => {
         throw error;
       }
 
-      toast.success(
-        isEditing
-          ? "Job listing updated successfully"
-          : "Job listing created successfully"
-      );
+      if (isTrustedPoster) {
+        toast.success(
+          isEditing
+            ? "Job listing updated successfully"
+            : "Job listing created successfully"
+        );
+      } else {
+        toast.success(
+          isEditing
+            ? "Job listing updated successfully. It will be reviewed by an admin."
+            : "Job listing submitted for review. It will be published after approval."
+        );
+      }
       
       navigate("/dashboard");
     } catch (error) {
@@ -181,6 +220,20 @@ const PostJobPage = () => {
       toast.error("Failed to save job listing");
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const getVerificationStatusBadge = () => {
+    if (!verificationStatus) return null;
+
+    switch(verificationStatus) {
+      case 'approved':
+        return <span className="text-green-600 bg-green-50 px-2 py-1 rounded text-sm font-medium">Approved</span>;
+      case 'rejected':
+        return <span className="text-red-600 bg-red-50 px-2 py-1 rounded text-sm font-medium">Rejected</span>;
+      case 'pending':
+      default:
+        return <span className="text-amber-600 bg-amber-50 px-2 py-1 rounded text-sm font-medium">Pending Review</span>;
     }
   };
 
@@ -204,6 +257,29 @@ const PostJobPage = () => {
           <h1 className="text-2xl font-bold text-gray-900 mb-6">
             {isEditing ? "Edit Job Listing" : "Post a New Job"}
           </h1>
+
+          {!isTrustedPoster && (
+            <Alert className="mb-6">
+              <AlertTriangle className="h-4 w-4" />
+              <AlertDescription>
+                Your job posting will be reviewed by an admin before it appears publicly.
+              </AlertDescription>
+            </Alert>
+          )}
+
+          {isEditing && verificationStatus && (
+            <div className="mb-6">
+              <p className="text-sm text-gray-500 mb-2">Verification Status: {getVerificationStatusBadge()}</p>
+              {verificationStatus === 'rejected' && (
+                <Alert variant="destructive" className="mt-2">
+                  <AlertTriangle className="h-4 w-4" />
+                  <AlertDescription>
+                    This job posting has been rejected. Please review and update the content according to our guidelines.
+                  </AlertDescription>
+                </Alert>
+              )}
+            </div>
+          )}
 
           <Card>
             <CardHeader>
@@ -453,10 +529,12 @@ const PostJobPage = () => {
                         </FormControl>
                         <div className="space-y-1 leading-none">
                           <FormLabel>
-                            Publish immediately
+                            Publish immediately {!isTrustedPoster && "(after approval)"}
                           </FormLabel>
                           <FormDescription>
-                            If unchecked, the job will be saved as a draft
+                            {isTrustedPoster 
+                              ? "If unchecked, the job will be saved as a draft"
+                              : "If unchecked, the job will be saved as a draft. It will still need admin approval before being visible to others."}
                           </FormDescription>
                         </div>
                       </FormItem>

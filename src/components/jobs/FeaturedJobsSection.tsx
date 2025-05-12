@@ -20,6 +20,7 @@ interface Job {
   experience: string;
   skills: string[];
   created_at: string;
+  verification_status: string;
 }
 
 const FeaturedJobsSection = () => {
@@ -34,6 +35,7 @@ const FeaturedJobsSection = () => {
           .from("jobs")
           .select("*")
           .eq("published", true)
+          .eq("verification_status", "approved") // Only show approved jobs
           .order("created_at", { ascending: false })
           .limit(3);
 

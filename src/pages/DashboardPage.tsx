@@ -7,7 +7,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
-import { Loader2, Plus, Clock, Eye, EyeOff, Edit, Trash2 } from "lucide-react";
+import { Loader2, Plus, Clock, Eye, EyeOff, Edit, Trash2, CheckCircle, XCircle } from "lucide-react";
 import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
 import { JOB_TYPES, EXPERIENCE_LEVELS } from "@/data/jobTypes";
@@ -22,12 +22,15 @@ interface Job {
   created_at: string;
   published: boolean;
   expires_at: string;
+  verification_status: "pending" | "approved" | "rejected";
 }
 
 const DashboardPage = () => {
   const { user, isLoading: authLoading } = useAuth();
   const [jobs, setJobs] = useState<Job[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [showAllJobs, setShowAllJobs] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -38,28 +41,57 @@ const DashboardPage = () => {
       return;
     }
 
-    const fetchJobs = async () => {
+    const getUserProfile = async () => {
       try {
         const { data, error } = await supabase
-          .from("jobs")
-          .select("*")
-          .order("created_at", { ascending: false });
+          .from("profiles")
+          .select("is_admin")
+          .eq("id", user.id)
+          .single();
 
         if (error) {
           throw error;
         }
 
-        setJobs(data || []);
+        if (data) {
+          setIsAdmin(data.is_admin);
+        }
       } catch (error) {
-        console.error("Error fetching jobs:", error);
-        toast.error("Failed to load your job listings");
-      } finally {
-        setIsLoading(false);
+        console.error("Error fetching user profile:", error);
       }
     };
 
+    getUserProfile();
     fetchJobs();
-  }, [user, navigate, authLoading]);
+  }, [user, navigate, authLoading, showAllJobs]);
+
+  const fetchJobs = async () => {
+    try {
+      setIsLoading(true);
+      let query = supabase
+        .from("jobs")
+        .select("*")
+        .order("created_at", { ascending: false });
+      
+      // If admin and showing all jobs, don't filter by user_id
+      if (!(isAdmin && showAllJobs)) {
+        query = query.eq("user_id", user?.id);
+      }
+      
+      const { data, error } = await query;
+
+      if (error) {
+        throw error;
+      }
+
+      setJobs(data || []);
+    } catch (error) {
+      console.error("Error fetching jobs:", error);
+      toast.error("Failed to load job listings");
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const togglePublished = async (jobId: string, currentStatus: boolean) => {
     try {
@@ -87,6 +119,28 @@ const DashboardPage = () => {
     }
   };
 
+  const updateVerificationStatus = async (jobId: string, status: "approved" | "rejected") => {
+    try {
+      const { error } = await supabase
+        .from("jobs")
+        .update({ verification_status: status })
+        .eq("id", jobId);
+
+      if (error) throw error;
+
+      setJobs((prev) =>
+        prev.map((job) =>
+          job.id === jobId ? { ...job, verification_status: status } : job
+        )
+      );
+
+      toast.success(`Job ${status === "approved" ? "approved" : "rejected"} successfully`);
+    } catch (error) {
+      console.error("Error updating verification status:", error);
+      toast.error("Failed to update verification status");
+    }
+  };
+
   const deleteJob = async (jobId: string) => {
     if (!confirm("Are you sure you want to delete this job listing? This action cannot be undone.")) {
       return;
@@ -109,6 +163,18 @@ const DashboardPage = () => {
     return new Date(dateString).toLocaleDateString();
   };
 
+  const renderVerificationStatus = (status: string) => {
+    switch (status) {
+      case "approved":
+        return <Badge className="bg-green-100 text-green-800 border-none">Approved</Badge>;
+      case "rejected":
+        return <Badge className="bg-red-100 text-red-800 border-none">Rejected</Badge>;
+      case "pending":
+      default:
+        return <Badge className="bg-amber-100 text-amber-800 border-none">Pending Review</Badge>;
+    }
+  };
+
   if (authLoading) {
     return (
       <div className="min-h-screen flex flex-col">
@@ -127,20 +193,35 @@ const DashboardPage = () => {
       <main className="flex-grow container mx-auto px-4 py-8">
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
-          <Button asChild className="bg-web3-primary hover:bg-web3-dark">
-            <Link to="/post-job">
-              <Plus className="mr-2 h-4 w-4" />
-              Post New Job
-            </Link>
-          </Button>
+          <div className="flex gap-2">
+            {isAdmin && (
+              <Button 
+                variant="outline" 
+                onClick={() => setShowAllJobs(!showAllJobs)}
+                className="mr-2"
+              >
+                {showAllJobs ? "Show My Jobs" : "Show All Jobs"}
+              </Button>
+            )}
+            <Button asChild className="bg-web3-primary hover:bg-web3-dark">
+              <Link to="/post-job">
+                <Plus className="mr-2 h-4 w-4" />
+                Post New Job
+              </Link>
+            </Button>
+          </div>
         </div>
 
         <div className="grid grid-cols-1 gap-6">
           <Card>
             <CardHeader>
-              <CardTitle>My Job Listings</CardTitle>
+              <CardTitle>
+                {isAdmin && showAllJobs ? "All Job Listings" : "My Job Listings"}
+              </CardTitle>
               <CardDescription>
-                Manage your job postings and check their status
+                {isAdmin && showAllJobs 
+                  ? "Manage all job postings including those pending review" 
+                  : "Manage your job postings and check their status"}
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -151,7 +232,9 @@ const DashboardPage = () => {
               ) : jobs.length === 0 ? (
                 <div className="text-center py-8">
                   <p className="text-gray-500 mb-4">
-                    You haven't posted any jobs yet
+                    {isAdmin && showAllJobs 
+                      ? "There are no job listings in the system" 
+                      : "You haven't posted any jobs yet"}
                   </p>
                   <Button asChild className="bg-web3-primary hover:bg-web3-dark">
                     <Link to="/post-job">Post Your First Job</Link>
@@ -164,6 +247,7 @@ const DashboardPage = () => {
                       <tr className="text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                         <th className="px-6 py-3">Job</th>
                         <th className="px-6 py-3">Status</th>
+                        <th className="px-6 py-3">Verification</th>
                         <th className="px-6 py-3">Posted</th>
                         <th className="px-6 py-3">Expires</th>
                         <th className="px-6 py-3">Actions</th>
@@ -201,6 +285,9 @@ const DashboardPage = () => {
                               </Badge>
                             )}
                           </td>
+                          <td className="px-6 py-4">
+                            {renderVerificationStatus(job.verification_status)}
+                          </td>
                           <td className="px-6 py-4 text-sm text-gray-500">
                             <div className="flex items-center gap-1">
                               <Clock className="h-4 w-4" />
@@ -212,35 +299,65 @@ const DashboardPage = () => {
                           </td>
                           <td className="px-6 py-4">
                             <div className="flex space-x-2">
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => togglePublished(job.id, job.published)}
-                                title={job.published ? "Unpublish" : "Publish"}
-                              >
-                                {job.published ? (
-                                  <EyeOff className="h-4 w-4" />
-                                ) : (
-                                  <Eye className="h-4 w-4" />
-                                )}
-                              </Button>
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => navigate(`/edit-job/${job.id}`)}
-                                title="Edit"
-                              >
-                                <Edit className="h-4 w-4" />
-                              </Button>
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => deleteJob(job.id)}
-                                className="text-red-500 hover:text-red-700"
-                                title="Delete"
-                              >
-                                <Trash2 className="h-4 w-4" />
-                              </Button>
+                              {/* Regular user actions */}
+                              {(!isAdmin || user?.id === job.user_id) && (
+                                <>
+                                  <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() => togglePublished(job.id, job.published)}
+                                    title={job.published ? "Unpublish" : "Publish"}
+                                    disabled={job.verification_status !== 'approved'}
+                                  >
+                                    {job.published ? (
+                                      <EyeOff className="h-4 w-4" />
+                                    ) : (
+                                      <Eye className="h-4 w-4" />
+                                    )}
+                                  </Button>
+                                  <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() => navigate(`/edit-job/${job.id}`)}
+                                    title="Edit"
+                                  >
+                                    <Edit className="h-4 w-4" />
+                                  </Button>
+                                  <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() => deleteJob(job.id)}
+                                    className="text-red-500 hover:text-red-700"
+                                    title="Delete"
+                                  >
+                                    <Trash2 className="h-4 w-4" />
+                                  </Button>
+                                </>
+                              )}
+                              
+                              {/* Admin verification actions */}
+                              {isAdmin && job.verification_status === 'pending' && (
+                                <>
+                                  <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() => updateVerificationStatus(job.id, 'approved')}
+                                    className="text-green-500 hover:text-green-700"
+                                    title="Approve"
+                                  >
+                                    <CheckCircle className="h-4 w-4" />
+                                  </Button>
+                                  <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() => updateVerificationStatus(job.id, 'rejected')}
+                                    className="text-red-500 hover:text-red-700"
+                                    title="Reject"
+                                  >
+                                    <XCircle className="h-4 w-4" />
+                                  </Button>
+                                </>
+                              )}
                             </div>
                           </td>
                         </tr>

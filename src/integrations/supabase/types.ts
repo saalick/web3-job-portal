@@ -28,6 +28,7 @@ export type Database = {
           title: string
           type: Database["public"]["Enums"]["job_type"]
           user_id: string
+          verification_status: string
         }
         Insert: {
           application_link?: string | null
@@ -47,6 +48,7 @@ export type Database = {
           title: string
           type: Database["public"]["Enums"]["job_type"]
           user_id: string
+          verification_status?: string
         }
         Update: {
           application_link?: string | null
@@ -66,6 +68,7 @@ export type Database = {
           title?: string
           type?: Database["public"]["Enums"]["job_type"]
           user_id?: string
+          verification_status?: string
         }
         Relationships: []
       }
@@ -76,6 +79,8 @@ export type Database = {
           company_website: string | null
           created_at: string
           id: string
+          is_admin: boolean
+          is_trusted_poster: boolean
         }
         Insert: {
           company_logo?: string | null
@@ -83,6 +88,8 @@ export type Database = {
           company_website?: string | null
           created_at?: string
           id: string
+          is_admin?: boolean
+          is_trusted_poster?: boolean
         }
         Update: {
           company_logo?: string | null
@@ -90,6 +97,8 @@ export type Database = {
           company_website?: string | null
           created_at?: string
           id?: string
+          is_admin?: boolean
+          is_trusted_poster?: boolean
         }
         Relationships: []
       }

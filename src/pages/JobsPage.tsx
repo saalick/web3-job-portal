@@ -27,6 +27,7 @@ interface Job {
   created_at: string;
   expires_at: string;
   published: boolean;
+  verification_status: string;
 }
 
 const JobsPage = () => {
@@ -63,6 +64,7 @@ const JobsPage = () => {
           .from("jobs")
           .select("*")
           .eq("published", true)
+          .eq("verification_status", "approved") // Only show approved jobs
           .order("created_at", { ascending: false });
 
         if (error) {
