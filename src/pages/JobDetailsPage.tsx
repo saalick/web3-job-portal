@@ -6,7 +6,7 @@ import Footer from "@/components/layout/Footer";
 import { mockJobs } from "@/data/mockJobs";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Clock, MapPin, Briefcase, Building, Calendar, DollarSign } from "lucide-react";
+import { Clock, MapPin, Briefcase, Building, Calendar, DollarSign, Globe, Users, User } from "lucide-react";
 import { JOB_TYPES, EXPERIENCE_LEVELS } from "@/data/jobTypes";
 
 const JobDetailsPage = () => {
