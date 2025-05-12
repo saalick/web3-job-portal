@@ -96,8 +96,8 @@ const PostJobPage = () => {
       }
 
       if (data) {
-        // Transform skills array to comma-separated string
-        const skillsString = data.skills.join(", ");
+        // Transform skills array to comma-separated string for form display
+        const skillsString = Array.isArray(data.skills) ? data.skills.join(", ") : "";
         
         form.reset({
           title: data.title,
@@ -128,6 +128,11 @@ const PostJobPage = () => {
 
     setIsLoading(true);
     try {
+      // Ensure skills is an array before saving to database
+      const skillsArray = typeof values.skills === 'string' 
+        ? values.skills.split(',').map(s => s.trim()).filter(s => s !== '')
+        : values.skills;
+        
       const jobData = {
         title: values.title,
         company: values.company,
@@ -138,7 +143,7 @@ const PostJobPage = () => {
         type: values.type,
         category: values.category,
         experience: values.experience,
-        skills: values.skills,
+        skills: skillsArray,
         application_link: values.applicationLink || null,
         contact_email: values.contactEmail || null,
         user_id: user.id,
