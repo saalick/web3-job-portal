@@ -6,7 +6,7 @@ const CompaniesSection = () => {
   const companies = [
     {
       name: "Ethereum",
-      logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/Ethereum_logo_2014.svg/256px-Ethereum_logo_2014.svg.png"
+      logo: "https://1000logos.net/wp-content/uploads/2023/01/Ethereum-logo.png"
     },
     {
       name: "Chainlink",
@@ -18,15 +18,19 @@ const CompaniesSection = () => {
     },
     {
       name: "Solana",
-      logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/Solana_logo.png/600px-Solana_logo.png"
+      logo: "https://upload.wikimedia.org/wikipedia/en/b/b9/Solana_logo.png"
     },
     {
       name: "Binance",
-      logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e8/Binance_Logo.svg/1280px-Binance_Logo.svg.png"
+      logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e8/Binance_Logo.svg/640px-Binance_Logo.svg.png"
     },
     {
       name: "Tron",
-      logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2d/TRON-logo.svg/1280px-TRON-logo.svg.png"
+      logo: "https://images.seeklogo.com/logo-png/39/2/tron-foundation-logo-png_seeklogo-394183.png"
+    },
+    {
+      name: "OKX",
+      logo: "https://upload.wikimedia.org/wikipedia/commons/0/0a/Logo-OKX.png"
     }
   ];
 
@@ -40,7 +44,7 @@ const CompaniesSection = () => {
           </p>
         </div>
         
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 items-center">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-7 gap-4 items-center">
           {companies.map((company, index) => (
             <Link 
               key={index} 
