@@ -1,0 +1,156 @@
+
+import { JobType, JobCategory, ExperienceLevel } from './jobTypes';
+
+export interface Job {
+  id: string;
+  title: string;
+  company: string;
+  companyLogo: string;
+  location: string;
+  salary: string;
+  description: string;
+  type: JobType;
+  category: JobCategory;
+  experience: ExperienceLevel;
+  skills: string[];
+  postedAt: string;
+  featured: boolean;
+}
+
+export const mockJobs: Job[] = [
+  {
+    id: '1',
+    title: 'Senior Solidity Developer',
+    company: 'Ethereum Foundation',
+    companyLogo: 'https://ethereum.org/static/a110735dade3f354a46fc2446cd52476/f3a29/eth-home-icon.webp',
+    location: 'Remote',
+    salary: '$120k - $160k',
+    description: 'We are looking for an experienced Solidity developer to join our team and help build the future of decentralized finance. You will be responsible for designing, implementing, and testing smart contracts, as well as collaborating with other developers to ensure the security and efficiency of our blockchain solutions.',
+    type: 'full-time',
+    category: 'smart-contracts',
+    experience: 'senior',
+    skills: ['Solidity', 'Ethereum', 'Smart Contracts', 'DeFi', 'Web3.js'],
+    postedAt: '2025-05-01',
+    featured: true,
+  },
+  {
+    id: '2',
+    title: 'Blockchain Protocol Engineer',
+    company: 'Chainlink',
+    companyLogo: 'https://cryptologos.cc/logos/chainlink-link-logo.png',
+    location: 'San Francisco, CA (Hybrid)',
+    salary: '$140k - $180k',
+    description: 'Join our team of experts to design and implement cutting-edge blockchain protocols. You will work on consensus algorithms, network architecture, and security mechanisms to advance the state of blockchain technology.',
+    type: 'full-time',
+    category: 'blockchain-development',
+    experience: 'senior',
+    skills: ['Consensus Algorithms', 'Cryptography', 'Go', 'Rust', 'Distributed Systems'],
+    postedAt: '2025-05-03',
+    featured: true,
+  },
+  {
+    id: '3',
+    title: 'Frontend Developer for NFT Marketplace',
+    company: 'OpenSea',
+    companyLogo: 'https://storage.googleapis.com/opensea-static/Logomark/OpenSea-Full-Logo%20(dark).png',
+    location: 'Remote',
+    salary: '$90k - $120k',
+    description: 'We\'re seeking a talented frontend developer to help build and maintain our NFT marketplace. You\'ll be responsible for implementing UI features, ensuring responsive design, and integrating with our backend services.',
+    type: 'full-time',
+    category: 'frontend',
+    experience: 'mid',
+    skills: ['React', 'TypeScript', 'Web3.js', 'CSS', 'UI/UX'],
+    postedAt: '2025-05-05',
+    featured: false,
+  },
+  {
+    id: '4',
+    title: 'Smart Contract Auditor',
+    company: 'Trail of Bits',
+    companyLogo: 'https://trailofbits.com/content/images/2022/07/mark-square-black.svg',
+    location: 'Remote',
+    salary: '$150k - $200k',
+    description: 'Join our security team to audit smart contracts and blockchain protocols. You will identify vulnerabilities, recommend security improvements, and help prevent exploits in critical blockchain infrastructure.',
+    type: 'freelance',
+    category: 'smart-contracts',
+    experience: 'senior',
+    skills: ['Solidity', 'Security Auditing', 'Blockchain Security', 'Formal Verification', 'Ethereum'],
+    postedAt: '2025-05-07',
+    featured: true,
+  },
+  {
+    id: '5',
+    title: 'DeFi Product Manager',
+    company: 'Aave',
+    companyLogo: 'https://cryptologos.cc/logos/aave-aave-logo.png',
+    location: 'London (Remote OK)',
+    salary: '$110k - $140k',
+    description: 'Drive the development of our DeFi lending platform. You\'ll work closely with developers, designers, and stakeholders to define product requirements, prioritize features, and ensure successful product delivery.',
+    type: 'full-time',
+    category: 'product',
+    experience: 'lead',
+    skills: ['DeFi', 'Product Management', 'Agile', 'Blockchain', 'Fintech'],
+    postedAt: '2025-05-08',
+    featured: false,
+  },
+  {
+    id: '6',
+    title: 'Crypto Marketing Specialist',
+    company: 'Polygon',
+    companyLogo: 'https://cryptologos.cc/logos/polygon-matic-logo.png',
+    location: 'Remote',
+    salary: '$80k - $110k',
+    description: 'Join our marketing team to promote our Layer 2 scaling solution. You\'ll create compelling content, manage social media campaigns, and develop marketing strategies to reach developers and users in the blockchain space.',
+    type: 'full-time',
+    category: 'marketing',
+    experience: 'mid',
+    skills: ['Content Marketing', 'Social Media', 'SEO', 'Community Building', 'Blockchain Knowledge'],
+    postedAt: '2025-05-09',
+    featured: false,
+  },
+  {
+    id: '7',
+    title: 'Rust Blockchain Developer',
+    company: 'Solana',
+    companyLogo: 'https://cryptologos.cc/logos/solana-sol-logo.png',
+    location: 'Remote',
+    salary: '$130k - $170k',
+    description: 'Develop and optimize our high-performance blockchain infrastructure. You\'ll work on core protocol features, consensus mechanisms, and networking code to help scale our platform for global adoption.',
+    type: 'full-time',
+    category: 'blockchain-development',
+    experience: 'senior',
+    skills: ['Rust', 'Distributed Systems', 'Blockchain', 'Performance Optimization', 'Networking'],
+    postedAt: '2025-05-10',
+    featured: true,
+  },
+  {
+    id: '8',
+    title: 'Web3 Community Manager',
+    company: 'Decentraland',
+    companyLogo: 'https://cryptologos.cc/logos/decentraland-mana-logo.png',
+    location: 'Remote',
+    salary: '$70k - $90k',
+    description: 'Grow and nurture our metaverse community. You\'ll organize virtual events, moderate community channels, create engaging content, and serve as a liaison between users and our development team.',
+    type: 'freelance',
+    category: 'community',
+    experience: 'mid',
+    skills: ['Community Building', 'Discord Management', 'Content Creation', 'Metaverse', 'Web3'],
+    postedAt: '2025-05-11',
+    featured: false,
+  },
+  {
+    id: '9',
+    title: 'Blockchain UX Designer',
+    company: 'MetaMask',
+    companyLogo: 'https://cryptologos.cc/logos/metamask-fox-logo.png',
+    location: 'Remote',
+    salary: '$100k - $130k',
+    description: 'Design intuitive user experiences for our cryptocurrency wallet. You\'ll create wireframes, prototypes, and visual designs that make complex blockchain interactions accessible to everyday users.',
+    type: 'full-time',
+    category: 'design',
+    experience: 'mid',
+    skills: ['UX Design', 'UI Design', 'Figma', 'User Research', 'Web3 UX'],
+    postedAt: '2025-05-12',
+    featured: false,
+  },
+];
