@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { Loader2 } from "lucide-react";
+import { JobType, JobCategory, ExperienceLevel } from "@/data/jobTypes";
 
 interface Job {
   id: string;
@@ -80,9 +81,9 @@ const FeaturedJobsSection = () => {
                   location: job.location,
                   salary: job.salary_range || 'Not specified',
                   description: job.description,
-                  type: job.type,
-                  category: job.category,
-                  experience: job.experience,
+                  type: job.type as JobType,
+                  category: job.category as JobCategory,
+                  experience: job.experience as ExperienceLevel,
                   skills: job.skills,
                   postedAt: job.created_at,
                   featured: true
