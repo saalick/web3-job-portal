@@ -9,7 +9,90 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      [_ in never]: never
+      jobs: {
+        Row: {
+          application_link: string | null
+          category: Database["public"]["Enums"]["job_category"]
+          company: string
+          company_logo: string | null
+          contact_email: string | null
+          created_at: string
+          description: string
+          experience: Database["public"]["Enums"]["experience_level"]
+          expires_at: string
+          id: string
+          location: string
+          published: boolean
+          salary_range: string | null
+          skills: string[]
+          title: string
+          type: Database["public"]["Enums"]["job_type"]
+          user_id: string
+        }
+        Insert: {
+          application_link?: string | null
+          category: Database["public"]["Enums"]["job_category"]
+          company: string
+          company_logo?: string | null
+          contact_email?: string | null
+          created_at?: string
+          description: string
+          experience: Database["public"]["Enums"]["experience_level"]
+          expires_at?: string
+          id?: string
+          location: string
+          published?: boolean
+          salary_range?: string | null
+          skills?: string[]
+          title: string
+          type: Database["public"]["Enums"]["job_type"]
+          user_id: string
+        }
+        Update: {
+          application_link?: string | null
+          category?: Database["public"]["Enums"]["job_category"]
+          company?: string
+          company_logo?: string | null
+          contact_email?: string | null
+          created_at?: string
+          description?: string
+          experience?: Database["public"]["Enums"]["experience_level"]
+          expires_at?: string
+          id?: string
+          location?: string
+          published?: boolean
+          salary_range?: string | null
+          skills?: string[]
+          title?: string
+          type?: Database["public"]["Enums"]["job_type"]
+          user_id?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          company_logo: string | null
+          company_name: string | null
+          company_website: string | null
+          created_at: string
+          id: string
+        }
+        Insert: {
+          company_logo?: string | null
+          company_name?: string | null
+          company_website?: string | null
+          created_at?: string
+          id: string
+        }
+        Update: {
+          company_logo?: string | null
+          company_name?: string | null
+          company_website?: string | null
+          created_at?: string
+          id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -18,7 +101,20 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      experience_level: "entry" | "mid" | "senior" | "lead"
+      job_category:
+        | "blockchain-development"
+        | "smart-contracts"
+        | "frontend"
+        | "backend"
+        | "design"
+        | "product"
+        | "marketing"
+        | "business"
+        | "legal"
+        | "community"
+        | "other"
+      job_type: "full-time" | "freelance"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -133,6 +229,22 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      experience_level: ["entry", "mid", "senior", "lead"],
+      job_category: [
+        "blockchain-development",
+        "smart-contracts",
+        "frontend",
+        "backend",
+        "design",
+        "product",
+        "marketing",
+        "business",
+        "legal",
+        "community",
+        "other",
+      ],
+      job_type: ["full-time", "freelance"],
+    },
   },
 } as const

@@ -1,17 +1,80 @@
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
-import { mockJobs } from "@/data/mockJobs";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Clock, MapPin, Briefcase, Building, Calendar, DollarSign, Globe, Users, User } from "lucide-react";
+import { Clock, MapPin, Briefcase, Building, Calendar, DollarSign, Globe, Users, User, Loader2, ExternalLink } from "lucide-react";
 import { JOB_TYPES, EXPERIENCE_LEVELS } from "@/data/jobTypes";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
+
+interface Job {
+  id: string;
+  title: string;
+  company: string;
+  company_logo: string | null;
+  location: string;
+  salary_range: string | null;
+  description: string;
+  type: string;
+  category: string;
+  experience: string;
+  skills: string[];
+  application_link: string | null;
+  contact_email: string | null;
+  created_at: string;
+  expires_at: string;
+  published: boolean;
+}
 
 const JobDetailsPage = () => {
   const { id } = useParams<{ id: string }>();
-  const job = mockJobs.find(job => job.id === id);
+  const [job, setJob] = useState<Job | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchJobDetails = async () => {
+      try {
+        setIsLoading(true);
+        
+        if (!id) return;
+
+        const { data, error } = await supabase
+          .from("jobs")
+          .select("*")
+          .eq("id", id)
+          .eq("published", true)
+          .single();
+
+        if (error) {
+          throw error;
+        }
+
+        setJob(data as Job);
+      } catch (error) {
+        console.error("Error fetching job details:", error);
+        toast.error("Failed to load job details");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchJobDetails();
+  }, [id]);
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex flex-col">
+        <Navbar />
+        <div className="flex-grow flex items-center justify-center">
+          <Loader2 className="h-10 w-10 animate-spin text-web3-primary" />
+        </div>
+        <Footer />
+      </div>
+    );
+  }
 
   if (!job) {
     return (
@@ -50,7 +113,7 @@ const JobDetailsPage = () => {
           <div className="flex flex-col md:flex-row gap-6">
             <div className="w-20 h-20 rounded-lg flex-shrink-0 overflow-hidden bg-white border border-gray-200 flex items-center justify-center">
               <img 
-                src={job.companyLogo} 
+                src={job.company_logo || 'https://placeholder.svg'} 
                 alt={`${job.company} logo`} 
                 className="w-full h-full object-contain p-1" 
                 onError={(e) => {
@@ -74,35 +137,47 @@ const JobDetailsPage = () => {
                 </div>
                 <div className="flex items-center gap-1">
                   <Clock className="h-4 w-4" />
-                  <span>Posted on {formatDate(job.postedAt)}</span>
+                  <span>Posted on {formatDate(job.created_at)}</span>
                 </div>
               </div>
               
               <div className="flex flex-wrap gap-3">
                 <Badge className="bg-web3-primary/10 text-web3-primary border-none">
-                  {JOB_TYPES[job.type]}
+                  {JOB_TYPES[job.type as keyof typeof JOB_TYPES]}
                 </Badge>
                 <Badge variant="outline" className="bg-gray-50">
                   {job.category.replace(/-/g, ' ')}
                 </Badge>
                 <Badge variant="outline" className="bg-gray-50">
-                  {EXPERIENCE_LEVELS[job.experience]}
+                  {EXPERIENCE_LEVELS[job.experience as keyof typeof EXPERIENCE_LEVELS]}
                 </Badge>
-                {job.featured && (
-                  <Badge className="bg-amber-100 text-amber-700 border-none">
-                    Featured
-                  </Badge>
-                )}
               </div>
             </div>
             
             <div className="md:text-right">
               <div className="text-xl font-semibold text-gray-900 mb-4">
-                {job.salary}
+                {job.salary_range || 'Salary not specified'}
               </div>
-              <Button className="bg-web3-primary hover:bg-web3-dark text-white w-full md:w-auto">
-                Apply Now
-              </Button>
+              {job.application_link ? (
+                <Button 
+                  className="bg-web3-primary hover:bg-web3-dark text-white w-full md:w-auto"
+                  onClick={() => window.open(job.application_link!, '_blank')}
+                >
+                  Apply Now
+                  <ExternalLink className="ml-2 h-4 w-4" />
+                </Button>
+              ) : job.contact_email ? (
+                <Button 
+                  className="bg-web3-primary hover:bg-web3-dark text-white w-full md:w-auto"
+                  onClick={() => window.location.href = `mailto:${job.contact_email}`}
+                >
+                  Contact Via Email
+                </Button>
+              ) : (
+                <Button disabled className="w-full md:w-auto">
+                  No Application Method Provided
+                </Button>
+              )}
             </div>
           </div>
         </div>
@@ -116,42 +191,9 @@ const JobDetailsPage = () => {
                 Job Description
               </h2>
               <div className="prose max-w-none text-gray-700">
-                <p className="mb-6">{job.description}</p>
-                <p className="mb-6">
-                  We are looking for talented individuals who are passionate about blockchain technology and want to make a difference in the Web3 ecosystem. As a {job.title} at {job.company}, you will have the opportunity to work on cutting-edge projects and collaborate with some of the brightest minds in the industry.
-                </p>
-                <h3 className="text-lg font-semibold text-gray-900 mt-8 mb-3">
-                  Key Responsibilities:
-                </h3>
-                <ul className="list-disc pl-5 mb-6 space-y-2">
-                  <li>Design, develop, and maintain blockchain applications and protocols</li>
-                  <li>Collaborate with cross-functional teams to define, design, and ship new features</li>
-                  <li>Ensure the performance, quality, and responsiveness of applications</li>
-                  <li>Identify and fix bugs and bottlenecks in the system</li>
-                  <li>Stay up-to-date with the latest blockchain technologies and best practices</li>
-                </ul>
-                
-                <h3 className="text-lg font-semibold text-gray-900 mt-8 mb-3">
-                  Requirements:
-                </h3>
-                <ul className="list-disc pl-5 mb-6 space-y-2">
-                  <li>Proven experience in {job.category.replace(/-/g, ' ')} roles</li>
-                  <li>Strong understanding of blockchain technology and Web3 concepts</li>
-                  <li>Experience with at least one major blockchain platform (Ethereum, Solana, etc.)</li>
-                  <li>Excellent problem-solving and analytical skills</li>
-                  <li>Good communication and collaboration abilities</li>
-                </ul>
-                
-                <h3 className="text-lg font-semibold text-gray-900 mt-8 mb-3">
-                  Benefits:
-                </h3>
-                <ul className="list-disc pl-5 mb-6 space-y-2">
-                  <li>Competitive salary and equity options</li>
-                  <li>Flexible working arrangements and remote-friendly environment</li>
-                  <li>Professional development opportunities</li>
-                  <li>Health insurance and wellness benefits</li>
-                  <li>Work with a talented and diverse team in a fast-growing industry</li>
-                </ul>
+                {job.description.split('\n').map((paragraph, index) => (
+                  <p key={index} className="mb-4">{paragraph}</p>
+                ))}
               </div>
             </div>
             
@@ -180,7 +222,7 @@ const JobDetailsPage = () => {
               <div className="flex items-center gap-4 mb-4">
                 <div className="w-16 h-16 rounded-lg overflow-hidden bg-white border border-gray-200 flex items-center justify-center">
                   <img 
-                    src={job.companyLogo} 
+                    src={job.company_logo || 'https://placeholder.svg'} 
                     alt={`${job.company} logo`} 
                     className="w-full h-full object-contain p-1" 
                     onError={(e) => {
@@ -191,33 +233,6 @@ const JobDetailsPage = () => {
                 <h3 className="text-lg font-medium text-gray-900">
                   {job.company}
                 </h3>
-              </div>
-              
-              <div className="space-y-3 text-gray-700">
-                <div className="flex items-center gap-3">
-                  <Globe className="h-5 w-5 text-gray-400" />
-                  <a href="#" className="text-web3-primary hover:underline">
-                    Visit Website
-                  </a>
-                </div>
-                <div className="flex items-center gap-3">
-                  <Briefcase className="h-5 w-5 text-gray-400" />
-                  <span>10+ Jobs Open</span>
-                </div>
-                <div className="flex items-center gap-3">
-                  <Users className="h-5 w-5 text-gray-400" />
-                  <span>51-200 Employees</span>
-                </div>
-                <div className="flex items-center gap-3">
-                  <Calendar className="h-5 w-5 text-gray-400" />
-                  <span>Founded in 2018</span>
-                </div>
-              </div>
-              
-              <div className="mt-6">
-                <Button variant="outline" className="w-full border-web3-primary text-web3-primary hover:bg-web3-primary/10">
-                  View Company Profile
-                </Button>
               </div>
             </div>
             
@@ -231,7 +246,7 @@ const JobDetailsPage = () => {
                   <DollarSign className="h-5 w-5 text-gray-400 mt-0.5" />
                   <div>
                     <div className="text-sm text-gray-500">Salary</div>
-                    <div className="font-medium">{job.salary}</div>
+                    <div className="font-medium">{job.salary_range || 'Not specified'}</div>
                   </div>
                 </div>
                 <div className="flex items-start gap-3">
@@ -245,29 +260,46 @@ const JobDetailsPage = () => {
                   <Briefcase className="h-5 w-5 text-gray-400 mt-0.5" />
                   <div>
                     <div className="text-sm text-gray-500">Job Type</div>
-                    <div className="font-medium">{JOB_TYPES[job.type]}</div>
+                    <div className="font-medium">{JOB_TYPES[job.type as keyof typeof JOB_TYPES]}</div>
                   </div>
                 </div>
                 <div className="flex items-start gap-3">
                   <User className="h-5 w-5 text-gray-400 mt-0.5" />
                   <div>
                     <div className="text-sm text-gray-500">Experience Level</div>
-                    <div className="font-medium">{EXPERIENCE_LEVELS[job.experience]}</div>
+                    <div className="font-medium">{EXPERIENCE_LEVELS[job.experience as keyof typeof EXPERIENCE_LEVELS]}</div>
                   </div>
                 </div>
                 <div className="flex items-start gap-3">
                   <Clock className="h-5 w-5 text-gray-400 mt-0.5" />
                   <div>
                     <div className="text-sm text-gray-500">Posted</div>
-                    <div className="font-medium">{formatDate(job.postedAt)}</div>
+                    <div className="font-medium">{formatDate(job.created_at)}</div>
                   </div>
                 </div>
               </div>
               
               <div className="mt-8">
-                <Button className="w-full bg-web3-primary hover:bg-web3-dark text-white">
-                  Apply for this job
-                </Button>
+                {job.application_link ? (
+                  <Button 
+                    className="w-full bg-web3-primary hover:bg-web3-dark text-white"
+                    onClick={() => window.open(job.application_link!, '_blank')}
+                  >
+                    Apply for this job
+                    <ExternalLink className="ml-2 h-4 w-4" />
+                  </Button>
+                ) : job.contact_email ? (
+                  <Button 
+                    className="w-full bg-web3-primary hover:bg-web3-dark text-white"
+                    onClick={() => window.location.href = `mailto:${job.contact_email}`}
+                  >
+                    Contact Via Email
+                  </Button>
+                ) : (
+                  <Button disabled className="w-full">
+                    No Application Method Provided
+                  </Button>
+                )}
               </div>
             </div>
           </div>
