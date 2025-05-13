@@ -31,10 +31,22 @@ const Navbar = () => {
   };
 
   return (
-    <header className="border-b border-gray-200 bg-white">
+    <header className="border-b border-gray-200 bg-gradient-to-r from-web3-primary/5 to-web3-secondary/5 backdrop-blur-sm">
       <div className="container mx-auto px-4 h-16 flex items-center justify-between">
-        <Link to="/" className="flex items-center">
-          <span className="font-bold text-xl text-web3-primary">Web3Jobs</span>
+        <Link to="/" className="flex items-center gap-2">
+          <img 
+            src="/logo.png" 
+            alt="MetaHire Logo" 
+            className="h-8 w-auto"
+            onError={(e) => {
+              const target = e.target as HTMLImageElement;
+              target.onerror = null;
+              console.log("Failed to load logo");
+            }}
+          />
+          <span className="font-bold text-xl bg-gradient-to-r from-web3-primary to-web3-secondary bg-clip-text text-transparent">
+            MetaHire
+          </span>
         </Link>
 
         {/* Desktop navigation */}
@@ -43,8 +55,8 @@ const Navbar = () => {
             to="/"
             className={`text-sm ${
               isActive("/")
-                ? "font-medium text-gray-900"
-                : "text-gray-600 hover:text-gray-900"
+                ? "font-medium text-web3-primary"
+                : "text-gray-600 hover:text-web3-primary transition-colors"
             }`}
           >
             Home
@@ -53,8 +65,8 @@ const Navbar = () => {
             to="/jobs"
             className={`text-sm ${
               isActive("/jobs")
-                ? "font-medium text-gray-900"
-                : "text-gray-600 hover:text-gray-900"
+                ? "font-medium text-web3-primary"
+                : "text-gray-600 hover:text-web3-primary transition-colors"
             }`}
           >
             Find Jobs
@@ -64,8 +76,8 @@ const Navbar = () => {
               to="/post-job"
               className={`text-sm ${
                 isActive("/post-job")
-                  ? "font-medium text-gray-900"
-                  : "text-gray-600 hover:text-gray-900"
+                  ? "font-medium text-web3-primary"
+                  : "text-gray-600 hover:text-web3-primary transition-colors"
               }`}
             >
               Post a Job
@@ -76,8 +88,8 @@ const Navbar = () => {
               to="/dashboard"
               className={`text-sm ${
                 isActive("/dashboard")
-                  ? "font-medium text-gray-900"
-                  : "text-gray-600 hover:text-gray-900"
+                  ? "font-medium text-web3-primary"
+                  : "text-gray-600 hover:text-web3-primary transition-colors"
               }`}
             >
               Dashboard
@@ -89,7 +101,7 @@ const Navbar = () => {
                 <Button 
                   variant="outline" 
                   size="sm" 
-                  className="flex items-center gap-2"
+                  className="flex items-center gap-2 border-web3-primary/20 hover:bg-web3-primary/10"
                   onClick={handleSignOut}
                 >
                   <LogOut className="h-4 w-4" />
@@ -100,7 +112,7 @@ const Navbar = () => {
               <Button 
                 size="sm" 
                 asChild
-                className="bg-web3-primary hover:bg-web3-dark"
+                className="bg-web3-primary hover:bg-web3-dark shadow-md hover:shadow-lg transition-all"
               >
                 <Link to="/auth" className="flex items-center gap-2">
                   <LogIn className="h-4 w-4" />
@@ -125,10 +137,22 @@ const Navbar = () => {
                 <div className="flex justify-between items-center py-4 border-b">
                   <Link 
                     to="/"
-                    className="font-bold text-xl text-web3-primary"
+                    className="flex items-center gap-2"
                     onClick={closeMenu}
                   >
-                    Web3Jobs
+                    <img 
+                      src="/logo.png" 
+                      alt="MetaHire Logo" 
+                      className="h-6 w-auto"
+                      onError={(e) => {
+                        const target = e.target as HTMLImageElement;
+                        target.onerror = null;
+                        console.log("Failed to load logo");
+                      }}
+                    />
+                    <span className="font-bold text-xl bg-gradient-to-r from-web3-primary to-web3-secondary bg-clip-text text-transparent">
+                      MetaHire
+                    </span>
                   </Link>
                   <Button variant="ghost" size="icon" onClick={closeMenu}>
                     <X className="h-5 w-5" />
