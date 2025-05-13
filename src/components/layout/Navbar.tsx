@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -79,14 +78,13 @@ const Navbar = () => {
         >
           <Link to="/" className="flex items-center gap-2 group">
             <div className="relative">
-              <div className="bg-gradient-to-r from-web3-primary to-web3-secondary rounded-lg p-1.5 relative z-10 transition-all duration-300 group-hover:shadow-[0_0_12px_rgba(124,58,237,0.7)]">
-                <Zap className="h-5 w-5 text-white" />
-              </div>
-              <div className="absolute inset-0 bg-white/20 rounded-lg blur-xl opacity-50 group-hover:opacity-80 transition-opacity duration-300"></div>
+              <img 
+                src="https://i.ibb.co/0pj3wzN4/Screenshot-2025-05-13-at-8-09-07-PM-removebg-preview.png" 
+                alt="MetaHire Logo" 
+                className="h-8 w-auto transition-all duration-300 group-hover:shadow-[0_0_12px_rgba(124,58,237,0.7)]"
+              />
+              <div className="absolute inset-0 blur-xl opacity-50 group-hover:opacity-80 transition-opacity duration-300"></div>
             </div>
-            <span className="font-display text-xl font-bold bg-gradient-to-r from-white to-white/80 bg-clip-text text-transparent">
-              MetaHire
-            </span>
           </Link>
         </motion.div>
 
@@ -231,12 +229,11 @@ const Navbar = () => {
                     className="flex items-center gap-2"
                     onClick={closeMenu}
                   >
-                    <div className="bg-gradient-to-r from-web3-primary to-web3-secondary rounded-lg p-1.5">
-                      <Zap className="h-5 w-5 text-white" />
-                    </div>
-                    <span className="font-display text-xl font-bold bg-gradient-to-r from-white to-white/80 bg-clip-text text-transparent">
-                      MetaHire
-                    </span>
+                    <img 
+                      src="https://i.ibb.co/0pj3wzN4/Screenshot-2025-05-13-at-8-09-07-PM-removebg-preview.png" 
+                      alt="MetaHire Logo" 
+                      className="h-8 w-auto"
+                    />
                   </Link>
                   <Button variant="ghost" size="icon" onClick={closeMenu} className="text-white/70 hover:text-white">
                     <X className="h-5 w-5" />
