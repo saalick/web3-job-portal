@@ -26,11 +26,13 @@ export default {
 				background: 'hsl(var(--background))',
 				foreground: 'hsl(var(--foreground))',
 				web3: {
-					primary: '#5E35B1',
-					secondary: '#2962FF',
-					accent: '#00BCD4',
-					light: '#B39DDB',
-					dark: '#311B92',
+					primary: '#7C3AED', // Updated to a vibrant purple
+					secondary: '#3B82F6', // Updated to a bright blue
+					accent: '#06B6D4', // Updated to a cyan
+					light: '#C4B5FD', // Updated to a light purple
+					dark: '#4C1D95', // Updated to a deep purple
+					neon: '#10B981', // Added neon green
+					pink: '#EC4899', // Added pink
 				},
 				primary: {
 					DEFAULT: 'hsl(var(--primary))',
@@ -103,12 +105,53 @@ export default {
 						transform: 'translateY(0)'
 					}
 				},
+				'float': {
+					'0%, 100%': { transform: 'translateY(0)' },
+					'50%': { transform: 'translateY(-10px)' },
+				},
+				'pulse-glow': {
+					'0%, 100%': { 
+						boxShadow: '0 0 15px 5px rgba(124, 58, 237, 0.4)',
+						transform: 'scale(1)'
+					},
+					'50%': { 
+						boxShadow: '0 0 25px 10px rgba(124, 58, 237, 0.6)',
+						transform: 'scale(1.05)'
+					},
+				},
+				'shimmer': {
+					'0%': { backgroundPosition: '-500px 0' },
+					'100%': { backgroundPosition: '500px 0' },
+				},
+				'gradient-rotate': {
+					'0%, 100%': { backgroundPosition: '0% 50%' },
+					'50%': { backgroundPosition: '100% 50%' },
+				},
+				'blur-in': {
+					'0%': { filter: 'blur(12px)', opacity: '0' },
+					'100%': { filter: 'blur(0)', opacity: '1' },
+				},
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
 				'accordion-up': 'accordion-up 0.2s ease-out',
 				'fade-in': 'fade-in 0.5s ease-out forwards',
-			}
+				'float': 'float 3s ease-in-out infinite',
+				'pulse-glow': 'pulse-glow 3s ease-in-out infinite',
+				'shimmer': 'shimmer 2s linear infinite',
+				'gradient-rotate': 'gradient-rotate 5s ease infinite',
+				'blur-in': 'blur-in 0.6s ease-out forwards',
+			},
+			backgroundImage: {
+				'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
+				'hero-pattern': 'url("/hero-pattern.svg")',
+				'glow-conic': 'conic-gradient(from 180deg at 50% 50%, #7C3AED 0deg, #3B82F6 180deg, #06B6D4 360deg)',
+			},
+			fontFamily: {
+				'mono': ['Space Mono', 'monospace'],
+				'sans': ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+				'display': ['Rajdhani', 'sans-serif'],
+			},
 		}
 	},
 	plugins: [require("tailwindcss-animate")],
