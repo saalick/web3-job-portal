@@ -127,7 +127,7 @@ const CategorySection = () => {
         
         <div className="mt-10 text-center">
           <Button variant="outline" className="border-web3-primary text-web3-primary hover:bg-web3-primary/10">
-            View All Categories <ArrowRight className="ml-2 h-4 w-4" />
+            View All Categories. <ArrowRight className="ml-2 h-4 w-4" />
           </Button>
         </div>
       </div>
