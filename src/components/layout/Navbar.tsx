@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -81,7 +82,7 @@ const Navbar = () => {
               <img 
                 src="https://i.ibb.co/0pj3wzN4/Screenshot-2025-05-13-at-8-09-07-PM-removebg-preview.png" 
                 alt="MetaHire Logo" 
-                className="h-8 w-auto transition-all duration-300 group-hover:shadow-[0_0_12px_rgba(124,58,237,0.7)]"
+                className="h-12 w-auto transition-all duration-300 group-hover:shadow-[0_0_12px_rgba(124,58,237,0.7)]"
               />
               <div className="absolute inset-0 blur-xl opacity-50 group-hover:opacity-80 transition-opacity duration-300"></div>
             </div>
@@ -232,7 +233,7 @@ const Navbar = () => {
                     <img 
                       src="https://i.ibb.co/0pj3wzN4/Screenshot-2025-05-13-at-8-09-07-PM-removebg-preview.png" 
                       alt="MetaHire Logo" 
-                      className="h-8 w-auto"
+                      className="h-10 w-auto"
                     />
                   </Link>
                   <Button variant="ghost" size="icon" onClick={closeMenu} className="text-white/70 hover:text-white">
